@@ -93,6 +93,8 @@ class Tile:
     def changePosition(self, pos):
         self.newx = pos[0]
         self.newy = pos[1]
+        self.lastx  = self.x
+        self.lasty = self.y
         self.deltax = (self.newx - self.x)/Tile.roc
         self.deltay = (self.newy - self.y)/Tile.roc
         return True
@@ -239,7 +241,8 @@ class Game:
         # 38 Up
         # 37 Left
         # 39 Right
-        self.addTile()
+        if self.checkTilesMoved():
+            self.addTile()
         self.drawTiles()
         self.working = False
         return True
@@ -257,6 +260,14 @@ class Game:
                  i = i + 1
         # Select one from remaining
         return opts[random.randint(0,len(opts)-1)]
+
+    def checkTilesMoved(self):
+        if len(self.tiles) == 0:
+            return True
+        for t in self.tiles:
+            if t.x != t.lastx or t.y != t.lasty:
+                return True
+        return False
 
     def addTile(self):
         pos = self.findEmptyPos()
